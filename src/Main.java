@@ -8,6 +8,7 @@ public class Main{
       Random myRandom = new Random(27);
       double[][] myData = new double[768][8];
       double[] results = new double[768];
+      int height = Integer.parseInt(args[0]);
       //int[] arr1 = {1, 2, 3, 4};
       
       try{
@@ -24,6 +25,7 @@ public class Main{
             results[i] = Double.parseDouble(myLine[8]);  //stores outcomes data into results arrray
             i++; 
             } 
+         myFileObj.close();
          }
          
       catch(FileNotFoundException e){
@@ -35,12 +37,14 @@ public class Main{
       double t = System.currentTimeMillis();  
       
       Node[] myNode = new Node[8];
-      for (int a = 2; a < 17; a += 2){
-         myNode[(a/2)-1] = new Node(myData, results, a);
+      for (int a = 2; a < 3; a += 2){
+         myNode[(a/2)-1] = new Node(myData, results, a, height);
          myNode[(a/2)-1].start();
          }
-         
-      for (int a = 0; a < 8; a += 1){
+      /*try{Thread.sleep(250);}
+      catch(Exception e){}
+      //System.exit(0);*/
+      /*for (int a = 0; a < 8; a += 1){
          try{
             myNode[a].join();
             System.out.println(myNode[a].getFitness());
@@ -108,7 +112,7 @@ public class Main{
          else{
             i++;
             }   
-         }
+         }*/
       
       }   
 }
