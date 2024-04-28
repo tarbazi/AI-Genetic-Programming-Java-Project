@@ -37,7 +37,7 @@ public class Main{
       double t = System.currentTimeMillis();  
       
       Node[] myNode = new Node[8];
-      for (int a = 2; a < 3; a += 2){
+      for (int a = 2; a < 17; a += 2){
          myNode[(a/2)-1] = new Node(myData, results, a, height);
          myNode[(a/2)-1].start();
          }
