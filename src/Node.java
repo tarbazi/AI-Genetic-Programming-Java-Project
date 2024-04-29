@@ -47,12 +47,13 @@ public class Node extends Thread{
    }
 
 
-   public Node(Node parent, String var, double val, Random seed, int maxHeight, int currentHeight, boolean left){
+   public Node(Node parent, double[][] terminalVals, String var, double val, Random seed, int maxHeight, int currentHeight, boolean left){
       this.parent = parent;
       this.var = var;
       this.myRandom = seed;
       this.maxHeight = maxHeight;
       this.currentHeight = currentHeight;
+      this.terminalVals = terminalVals;
       leftVal = -1;
       rightVal = -1;
       visited = false;
@@ -63,7 +64,7 @@ public class Node extends Thread{
       
       if ((currentHeight < maxHeight) && nodeSide == 0){
          String temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
-         this.leftChild = new Node(this, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
+         this.leftChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
          //System.out.println(currentHeight);
          //System.out.println("Inserted some functional node on the left.");
          this.leftChild.insert(0);
@@ -71,7 +72,7 @@ public class Node extends Thread{
 
       else if ((currentHeight >= maxHeight) && nodeSide == 0){
          String temp = terminalSet[(int)(myRandom.nextDouble()*terminalSet.length)];
-         this.leftChild = new Node(this, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
+         this.leftChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
          //System.out.println("Inserted some terminal node on the left.");
          this.insert(1);
 
@@ -80,7 +81,7 @@ public class Node extends Thread{
       else if (currentHeight < maxHeight && nodeSide == 1){
          if (this.rightChild == null){
             String temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
-            this.rightChild = new Node(this, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, false);
+            this.rightChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, false);
             //System.out.println(currentHeight);
             //System.out.println("Inserted some functional node on the right.");
             this.rightChild.insert(0);
@@ -105,7 +106,7 @@ public class Node extends Thread{
 
          if (this.rightChild == null){
             String temp = terminalSet[(int)(myRandom.nextDouble()*terminalSet.length)];
-            this.rightChild = new Node(this, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, false);
+            this.rightChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, false);
             //System.out.println("Inserted some terminal node on the right.");
             if (this.parent != null){
                //System.out.println("Went up");
@@ -136,7 +137,9 @@ public class Node extends Thread{
    public void evaluate(){
       int count = 0;
       for (int i = 0; i < 768; i++){
-         boolean check = (results[i] == this.getResult(i));
+         double result = this.getResult(i);
+         //System.out.println(result);
+         boolean check = (results[i] == result);
          if (check == true){
             count++;
          }
@@ -152,7 +155,8 @@ public class Node extends Thread{
          return this.operate();
       }
       else{
-         return val; 
+         //System.out.println(terminalVals[i][getIndex(var)]);
+         return terminalVals[i][getIndex(var)]; 
       }
    }
     
@@ -202,6 +206,7 @@ public class Node extends Thread{
             return 1;
             }
          else{
+            //System.out.println("Left  val = "+typeOf(this.leftVal)+" right val = "+this.rightVal);
             return 0;
             }   
          }  
@@ -210,6 +215,7 @@ public class Node extends Thread{
             return 1;
             }
          else{
+            //System.out.println("Left  val = "+this.leftVal+" right val = "+this.rightVal);
             return 0;
             }
          }            

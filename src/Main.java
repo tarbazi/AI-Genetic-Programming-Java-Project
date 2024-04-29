@@ -41,10 +41,8 @@ public class Main{
          myNode[(a/2)-1] = new Node(myData, results, a, height);
          myNode[(a/2)-1].start();
          }
-      /*try{Thread.sleep(250);}
-      catch(Exception e){}
-      //System.exit(0);*/
-      /*for (int a = 0; a < 8; a += 1){
+
+      for (int a = 0; a < 8; a += 1){
          try{
             myNode[a].join();
             System.out.println(myNode[a].getFitness());
@@ -54,12 +52,12 @@ public class Main{
             }   
          }
       System.out.println("\nInitial population created. Ranked population will follow.\n");
-      sort(myNode);   
+      //sort(myNode);   
       for (int i = 0; i < myNode.length; i++){
          System.out.println(myNode[i].getFitness());
          }
       
-      for (int i = 0; i < 30; i++){
+      for (int i = 0; i < 5; i++){
          int[] arr = {0, 1, 2, 3, 4, 5, 6, 7};
          //System.out.println((int)myRandom.nextDouble()*8);
          int a = arr[(int)myRandom.nextDouble()*8];
@@ -74,8 +72,8 @@ public class Main{
             d = arr[(int)(myRandom.nextDouble()*arr.length)];
             //System.out.println(d);
             }
-         Crossover myCrossover1 = new Crossover(myNode[0], myNode[1], i);
-         Crossover myCrossover2 = new Crossover(myNode[2], myNode[3], (i+30));
+         Crossover myCrossover1 = new Crossover(myNode[a], myNode[b], i);
+         Crossover myCrossover2 = new Crossover(myNode[c], myNode[d], (i+30));
          myCrossover1.start();
          myCrossover2.run();
          try{
@@ -93,12 +91,21 @@ public class Main{
          System.out.println(myNode[1].getFitness());
          System.out.println(myNode[2].getFitness());
          System.out.println(myNode[3].getFitness());
-         sort(myNode);
+         //sort(myNode);
          }         
       
-      System.out.println("Done in: "+(System.currentTimeMillis()-t));   
+      System.out.println("Done in: "+(System.currentTimeMillis()-t));
+      try{
+         Thread.sleep(1);
+         System.exit(0);
+      }   
+      catch (Exception e){
+
       }
-   public static void sort(Node[] node){
+      }
+
+
+   /*public static void sort(Node[] node){
       int i = 0;
       int upper = (node.length)-1;
       Node temp;
@@ -114,5 +121,5 @@ public class Main{
             }   
          }*/
       
-      }   
+      //} 
 }
