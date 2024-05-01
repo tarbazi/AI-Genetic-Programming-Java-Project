@@ -10,9 +10,7 @@ public class Node extends Thread{
    double leftVal, rightVal; //stores the numeric values returned from the left and right subtree of the node
 
    String[] terminalSet = {"X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"};  //terminal set variables
-   String[] functionalSet = {"+","+","+","-","x","x","/"}; //functional set values
-   
-   int[] setChoice = {0, 1};   //value 0 represents fuctional set, value 1 represents terminal set
+   String[] functionalSet = {"+","-","x"}; //functional set values
 
    double[][] terminalVals;   //stores an array of the exact values from the input file
    double[] results;
@@ -22,6 +20,10 @@ public class Node extends Thread{
    int maxHeight, currentHeight;
    Random myRandom;
    double fitness;
+   double trueNegatives;
+   double truePositives;
+   double falseNegatives;
+   double falsePositives;
    
    boolean left;
    
@@ -95,8 +97,8 @@ public class Node extends Thread{
             }
 
             else{
-               System.out.println("Initial population created");
-               System.out.println("***************************");
+               //System.out.println("Initial population created");
+               //System.out.println("***************************");
                //full tree with desireable height will have been created
             }
          }
@@ -113,8 +115,8 @@ public class Node extends Thread{
                this.parent.insert(1);
             }
             else{
-               System.out.println("Initial population created");
-               System.out.println("***************************");
+               //System.out.println("Initial population created");
+               //System.out.println("***************************");
                //full tree with desireable height will have been created
             }
          }
@@ -126,8 +128,8 @@ public class Node extends Thread{
                //move on step upper on the tree
             }
             else{
-               System.out.println("Initial population created");
-               System.out.println("***************************");
+               //System.out.println("Initial population created");
+               //System.out.println("***************************");
                //full tree with desireable height will have been created
             }
          }
@@ -136,17 +138,42 @@ public class Node extends Thread{
     
    public void evaluate(){
       int count = 0;
+      truePositives = 0;
+      trueNegatives = 0;
+      falsePositives = 0;
+      falseNegatives = 0;
       for (int i = 0; i < 768; i++){
          double result = this.getResult(i);
          //System.out.println(result);
          boolean check = (results[i] == result);
          if (check == true){
+            if (results[i] == 0){
+               trueNegatives++;
+               }
+
+            else{
+               truePositives++;
+               }
+
             count++;
+            }
+         
+         else{
+            if(results[i] == 0){
+               falsePositives++;
+               }
+            else{
+               falseNegatives++;
+               }
+            }   
+
          }
+         this.fitness = (100*count)/768;
+         this.trueNegatives = (100*trueNegatives)/768;
+         this.truePositives = (100*truePositives)/768;
+         this.falseNegatives = (100*falseNegatives)/768;
+         this.falsePositives = (100*falsePositives)/768;
       }
-      this.fitness = (100*count)/768;
-      System.out.println(count+" hits");
-   }
 
    public double getResult(int i){
       if (this.leftChild != null){
@@ -164,7 +191,11 @@ public class Node extends Thread{
       this.insert(0);  
       this.evaluate();  
    }
-    
+
+   public void setVar(String var){
+      this.var = var;
+   }
+
    public Random getSeed(){
       return myRandom;
    }
@@ -226,5 +257,21 @@ public class Node extends Thread{
       }
    public double getFitness(){
       return this.fitness;
-      }   
+      }  
+
+   public double getTrueNegatives(){
+      return this.trueNegatives;
+      } 
+
+   public double getTruePositives(){
+      return this.truePositives;
+      }
+
+   public double getFalseNegatives(){
+      return this.falseNegatives;
+      }
+   
+   public double getFalsePositives(){
+      return this.falsePositives;
+      }
 }

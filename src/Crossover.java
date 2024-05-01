@@ -4,7 +4,7 @@ public class Crossover extends Thread{
    Node parent1;
    Node parent2;
    int[] initDir = {-1,1};
-   int[] finalDir = {-1, 0, 0, 1};
+   int[] finalDir = {-1, 0, 1};
    Random myRandom;
    
    public Crossover(){
@@ -88,6 +88,7 @@ public class Crossover extends Thread{
          traverse2.parent.rightChild = temp1;
          }        
       }
+
    public void cloneNode(){
       }   
 }

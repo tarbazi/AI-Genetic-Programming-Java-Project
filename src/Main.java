@@ -36,13 +36,13 @@ public class Main{
       
       double t = System.currentTimeMillis();  
       
-      Node[] myNode = new Node[8];
-      for (int a = 2; a < 17; a += 2){
-         myNode[(a/2)-1] = new Node(myData, results, a, height);
-         myNode[(a/2)-1].start();
+      Node[] myNode = new Node[4];
+      for (int a = 0; a < 4; a += 1){
+         myNode[a] = new Node(myData, results, a, height);
+         myNode[a].start();
          }
 
-      for (int a = 0; a < 8; a += 1){
+      for (int a = 0; a < 4; a += 1){
          try{
             myNode[a].join();
             System.out.println(myNode[a].getFitness());
@@ -52,46 +52,100 @@ public class Main{
             }   
          }
       System.out.println("\nInitial population created. Ranked population will follow.\n");
-      //sort(myNode);   
+      sort(myNode);   
       for (int i = 0; i < myNode.length; i++){
          System.out.println(myNode[i].getFitness());
+         System.out.println("True Positives = "+myNode[i].getTruePositives());
+         System.out.println("True Negatives = "+myNode[i].getTrueNegatives());
+         System.out.println("False Positives = "+myNode[i].getFalsePositives());
+         System.out.println("False Negatives = "+myNode[i].getFalseNegatives());
          }
       
-      for (int i = 0; i < 5; i++){
-         int[] arr = {0, 1, 2, 3, 4, 5, 6, 7};
-         //System.out.println((int)myRandom.nextDouble()*8);
-         int a = arr[(int)myRandom.nextDouble()*8];
-         int b = arr[(int)myRandom.nextDouble()*8];
-         int c = arr[(int)myRandom.nextDouble()*8];
-         int d = arr[(int)myRandom.nextDouble()*8];
-         while (a == b){
-            b = arr[(int)(myRandom.nextDouble()*arr.length)];
-            //System.out.println(b);
+      for (int i = 0; i < 30; i++){
+         if (i%12 == 0){
+            int[] arr = {0, 1, 2, 3, 4, 5, 6, 7};
+            //System.out.println((int)myRandom.nextDouble()*8);
+            int a = arr[(int)myRandom.nextDouble()*4];
+            int b = arr[(int)myRandom.nextDouble()*4];
+            int c = arr[(int)myRandom.nextDouble()*4];
+            int d = arr[(int)myRandom.nextDouble()*4];
+            while (a == b){
+               b = arr[(int)(myRandom.nextDouble()*4)];
+               //System.out.println(b);
+               }
+            while (c == d){
+               d = arr[(int)(myRandom.nextDouble()*4)];
+               //System.out.println(d);
+               }
+            
+            Crossover myCrossover1 = new Crossover(myNode[a], myNode[b], i);
+            Crossover myCrossover2 = new Crossover(myNode[c], myNode[d], (i+30));
+            myCrossover1.start();
+            myCrossover2.run();
+            try{
+               myCrossover1.join();
+               }
+            catch (InterruptedException e){
+               System.out.println(e);
+               }  
+            System.out.println("\nGeneration "+(i+1)+" from crossover\n");  
+            myNode[0].evaluate();  
+            myNode[1].evaluate();
+            myNode[2].evaluate();
+            myNode[3].evaluate();
+            sort(myNode);
+            System.out.println(myNode[0].getFitness());
+            System.out.println(myNode[1].getFitness());
+            System.out.println(myNode[2].getFitness());
+            System.out.println(myNode[3].getFitness());
             }
-         while (c == d){
-            d = arr[(int)(myRandom.nextDouble()*arr.length)];
-            //System.out.println(d);
+         else{
+            Mutate myMutate1 = new Mutate(myNode[0], 0);
+            Mutate myMutate2 = new Mutate(myNode[1], 1);
+            Mutate myMutate3 = new Mutate(myNode[2], 2);
+            Mutate myMutate4 = new Mutate(myNode[3], 0);
+            myMutate1.start();
+            myMutate2.start();
+            myMutate3.start();
+            myMutate4.start();
+            myNode[0].evaluate();  
+            myNode[1].evaluate();
+            myNode[2].evaluate();
+            myNode[3].evaluate();
+            try{
+               myMutate1.join();
+               myMutate2.join();
+               myMutate3.join();
+               myMutate4.join();
+               }
+            catch(Exception e){
+               System.exit(0);
+               }
+            System.out.println("\nGeneration "+(i+1)+" from mutation\n"); 
+            sort(myNode);
+            System.out.println(myNode[0].getFitness());
+            System.out.println("True Positives = "+myNode[0].getTruePositives());
+            System.out.println("True Negatives = "+myNode[0].getTrueNegatives());
+            System.out.println("False Positives = "+myNode[0].getFalsePositives());
+            System.out.println("False Negatives = "+myNode[0].getFalseNegatives()+"\n");
+            System.out.println(myNode[1].getFitness());
+            System.out.println("True Positives = "+myNode[1].getTruePositives());
+            System.out.println("True Negatives = "+myNode[1].getTrueNegatives());
+            System.out.println("False Positives = "+myNode[1].getFalsePositives());
+            System.out.println("False Negatives = "+myNode[1].getFalseNegatives()+"\n");
+            System.out.println(myNode[2].getFitness());
+            System.out.println("True Positives = "+myNode[2].getTruePositives());
+            System.out.println("True Negatives = "+myNode[2].getTrueNegatives());
+            System.out.println("False Positives = "+myNode[2].getFalsePositives());
+            System.out.println("False Negatives = "+myNode[2].getFalseNegatives()+"\n");
+            System.out.println(myNode[3].getFitness());
+            System.out.println("True Positives = "+myNode[3].getTruePositives());
+            System.out.println("True Negatives = "+myNode[3].getTrueNegatives());
+            System.out.println("False Positives = "+myNode[3].getFalsePositives());
+            System.out.println("False Negatives = "+myNode[3].getFalseNegatives()+"\n");
+
+            
             }
-         Crossover myCrossover1 = new Crossover(myNode[a], myNode[b], i);
-         Crossover myCrossover2 = new Crossover(myNode[c], myNode[d], (i+30));
-         myCrossover1.start();
-         myCrossover2.run();
-         try{
-            myCrossover1.join();
-            }
-         catch (InterruptedException e){
-            System.out.println(e);
-            }  
-         System.out.println("\nGeneration "+(i+1)+"\n");  
-         myNode[0].evaluate();  
-         myNode[1].evaluate();
-         myNode[2].evaluate();
-         myNode[3].evaluate();
-         System.out.println(myNode[0].getFitness());
-         System.out.println(myNode[1].getFitness());
-         System.out.println(myNode[2].getFitness());
-         System.out.println(myNode[3].getFitness());
-         //sort(myNode);
          }         
       
       System.out.println("Done in: "+(System.currentTimeMillis()-t));
@@ -102,10 +156,10 @@ public class Main{
       catch (Exception e){
 
       }
-      }
+   }
 
 
-   /*public static void sort(Node[] node){
+   public static void sort(Node[] node){
       int i = 0;
       int upper = (node.length)-1;
       Node temp;
@@ -119,7 +173,7 @@ public class Main{
          else{
             i++;
             }   
-         }*/
+         }
       
-      //} 
+      } 
 }
