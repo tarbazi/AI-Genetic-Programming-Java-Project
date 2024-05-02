@@ -13,18 +13,36 @@ public class Main{
       double[][] fileData2;
       double[][] fileData3;
 
+      int[] results1;
+      int[] results2;
+      int[] results3;
+
       for (int i = 0; i < numFiles; i++){
          if (i == 0){
             fileData1 = processData(readMyFile(args[2]));
+            results1 = getResults(args[2]);
             }
-         else if (i == 0){
+         else if (i == 1){
             fileData2 = processData(readMyFile(args[3]));
+            results2 = getResults(args[3]);
             }
          else{
             fileData3 = processData(readMyFile(args[4]));
+            results3 = getResults(args[4]);
             }
          }
 
+      if (numFiles == 1){
+
+         }
+
+      else if(numFiles == 2){
+
+         }
+
+      else{
+
+         }
       
    }
 
@@ -32,6 +50,10 @@ public class Main{
       return null;
    }
    
+   public static int[] getResults(String fileName){
+      return null;
+   }
+
    public static String[][] readMyFile(String fileName){
       String[][] myFileData;
 
@@ -63,6 +85,7 @@ public class Main{
                }
             i++;
             }
+            
          myFileObj.close();
          }
          
