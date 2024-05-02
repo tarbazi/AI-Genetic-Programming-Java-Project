@@ -51,6 +51,43 @@ public class Main{
    }
    
    public static int[] getResults(String fileName){
+      int[] results;
+
+      try{
+
+         File myFile = new File("../file/"+fileName);
+         Scanner myFileObj = new Scanner(myFile);
+
+         int x = 0;
+         int y = (myFileObj.nextLine().split(",").length)-1;
+
+         while (myFileObj.hasNextLine()){
+            myFileObj.nextLine();
+            x++; 
+            } 
+         
+         myFileObj.close();
+         myFileObj = new Scanner(myFile);
+
+         results = new int[x];
+         myFileObj.nextLine();
+         
+         int i = 0;
+
+         while (myFileObj.hasNextLine()){
+            results[i] = Integer.parseInt(myFileObj.nextLine().split(",")[y]);
+            i++;
+            }
+
+         myFileObj.close();
+         }
+         
+      catch(FileNotFoundException e){
+         results = null;
+         System.out.println("File not found. Check filename carefully and make sure file the target file is stored in the \"file\"");
+         System.exit(0);
+         }
+
       return null;
    }
 
@@ -63,7 +100,7 @@ public class Main{
          Scanner myFileObj = new Scanner(myFile);
 
          int x = 0;
-         int y = myFileObj.nextLine().split(",").length;
+         int y = (myFileObj.nextLine().split(",").length)-1;
 
          while (myFileObj.hasNextLine()){
             myFileObj.nextLine();
@@ -85,7 +122,7 @@ public class Main{
                }
             i++;
             }
-            
+
          myFileObj.close();
          }
          
