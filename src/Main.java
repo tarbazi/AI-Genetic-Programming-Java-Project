@@ -6,158 +6,73 @@ import java.util.Random;
 public class Main{
    public static void main(String[] args){
       Random myRandom = new Random(27);
-      double[][] myData = new double[768][8];
-      double[] results = new double[768];
       int height = Integer.parseInt(args[0]);
-      //int[] arr1 = {1, 2, 3, 4};
+
+      int numFiles = Integer.parseInt(args[1]);
+      double[][] fileData1;
+      double[][] fileData2;
+      double[][] fileData3;
+
+      for (int i = 0; i < numFiles; i++){
+         if (i == 0){
+            fileData1 = processData(readMyFile(args[2]));
+            }
+         else if (i == 0){
+            fileData2 = processData(readMyFile(args[3]));
+            }
+         else{
+            fileData3 = processData(readMyFile(args[4]));
+            }
+         }
+
       
+   }
+
+   public static double[][] processData(String[][] rawData){
+      return null;
+   }
+   
+   public static String[][] readMyFile(String fileName){
+      String[][] myFileData;
+
       try{
-         File myFile = new File("../file/diabetes.csv");
+
+         File myFile = new File("../file/"+fileName);
          Scanner myFileObj = new Scanner(myFile);
-         myFileObj.nextLine();
-         int i = 0;
+
+         int x = 0;
+         int y = myFileObj.nextLine().split(",").length;
+
          while (myFileObj.hasNextLine()){
-            String[] myLine = myFileObj.nextLine().split(",");
-            for (int j = 0; j < 8; j++){
-               myData[i][j] = Double.parseDouble(myLine[j]); //stores treatment data into myData[][] array
-               }
-            //myData[i][8] = arr1[(int)(myRandom.nextDouble()*arr1.length)]; 
-            results[i] = Double.parseDouble(myLine[8]);  //stores outcomes data into results arrray
-            i++; 
+            myFileObj.nextLine();
+            x++; 
             } 
+         
+         myFileObj.close();
+         myFileObj = new Scanner(myFile);
+
+         myFileData = new String[x][y];
+         myFileObj.nextLine();
+         
+         int i = 0;
+
+         while (myFileObj.hasNextLine()){
+            String[] temp = myFileObj.nextLine().split(",");
+            for (int j = 0; j < y; j++){
+               myFileData[i][j] = temp[j];
+               }
+            i++;
+            }
          myFileObj.close();
          }
          
       catch(FileNotFoundException e){
-         System.out.println("File not found.");
+         myFileData = null;
+         System.out.println("File not found. Check filename carefully and make sure file the target file is stored in the \"file\"");
          System.exit(0);
-         } 
-      //code to read and pre-process the files data   
-      
-      double t = System.currentTimeMillis();  
-      
-      Node[] myNode = new Node[4];
-      for (int a = 0; a < 4; a += 1){
-         myNode[a] = new Node(myData, results, a, height);
-         myNode[a].start();
          }
-
-      for (int a = 0; a < 4; a += 1){
-         try{
-            myNode[a].join();
-            System.out.println(myNode[a].getFitness());
-            }
-         catch (InterruptedException e){
-            System.out.println(e);
-            }   
-         }
-      System.out.println("\nInitial population created. Ranked population will follow.\n");
-      sort(myNode);   
-      for (int i = 0; i < myNode.length; i++){
-         System.out.println(myNode[i].getFitness());
-         System.out.println("True Positives = "+myNode[i].getTruePositives());
-         System.out.println("True Negatives = "+myNode[i].getTrueNegatives());
-         System.out.println("False Positives = "+myNode[i].getFalsePositives());
-         System.out.println("False Negatives = "+myNode[i].getFalseNegatives());
-         }
-      
-      for (int i = 0; i < 30; i++){
-         if (i%12 == 0){
-            int[] arr = {0, 1, 2, 3, 4, 5, 6, 7};
-            //System.out.println((int)myRandom.nextDouble()*8);
-            int a = arr[(int)myRandom.nextDouble()*4];
-            int b = arr[(int)myRandom.nextDouble()*4];
-            int c = arr[(int)myRandom.nextDouble()*4];
-            int d = arr[(int)myRandom.nextDouble()*4];
-            while (a == b){
-               b = arr[(int)(myRandom.nextDouble()*4)];
-               //System.out.println(b);
-               }
-            while (c == d){
-               d = arr[(int)(myRandom.nextDouble()*4)];
-               //System.out.println(d);
-               }
-            
-            Crossover myCrossover1 = new Crossover(myNode[a], myNode[b], i);
-            Crossover myCrossover2 = new Crossover(myNode[c], myNode[d], (i+30));
-            myCrossover1.start();
-            myCrossover2.run();
-            try{
-               myCrossover1.join();
-               }
-            catch (InterruptedException e){
-               System.out.println(e);
-               }  
-            System.out.println("\nGeneration "+(i+1)+" from crossover\n");  
-            myNode[0].evaluate();  
-            myNode[1].evaluate();
-            myNode[2].evaluate();
-            myNode[3].evaluate();
-            sort(myNode);
-            System.out.println(myNode[0].getFitness());
-            System.out.println(myNode[1].getFitness());
-            System.out.println(myNode[2].getFitness());
-            System.out.println(myNode[3].getFitness());
-            }
-         else{
-            Mutate myMutate1 = new Mutate(myNode[0], 0);
-            Mutate myMutate2 = new Mutate(myNode[1], 1);
-            Mutate myMutate3 = new Mutate(myNode[2], 2);
-            Mutate myMutate4 = new Mutate(myNode[3], 0);
-            myMutate1.start();
-            myMutate2.start();
-            myMutate3.start();
-            myMutate4.start();
-            myNode[0].evaluate();  
-            myNode[1].evaluate();
-            myNode[2].evaluate();
-            myNode[3].evaluate();
-            try{
-               myMutate1.join();
-               myMutate2.join();
-               myMutate3.join();
-               myMutate4.join();
-               }
-            catch(Exception e){
-               System.exit(0);
-               }
-            System.out.println("\nGeneration "+(i+1)+" from mutation\n"); 
-            sort(myNode);
-            System.out.println(myNode[0].getFitness());
-            System.out.println("True Positives = "+myNode[0].getTruePositives());
-            System.out.println("True Negatives = "+myNode[0].getTrueNegatives());
-            System.out.println("False Positives = "+myNode[0].getFalsePositives());
-            System.out.println("False Negatives = "+myNode[0].getFalseNegatives()+"\n");
-            System.out.println(myNode[1].getFitness());
-            System.out.println("True Positives = "+myNode[1].getTruePositives());
-            System.out.println("True Negatives = "+myNode[1].getTrueNegatives());
-            System.out.println("False Positives = "+myNode[1].getFalsePositives());
-            System.out.println("False Negatives = "+myNode[1].getFalseNegatives()+"\n");
-            System.out.println(myNode[2].getFitness());
-            System.out.println("True Positives = "+myNode[2].getTruePositives());
-            System.out.println("True Negatives = "+myNode[2].getTrueNegatives());
-            System.out.println("False Positives = "+myNode[2].getFalsePositives());
-            System.out.println("False Negatives = "+myNode[2].getFalseNegatives()+"\n");
-            System.out.println(myNode[3].getFitness());
-            System.out.println("True Positives = "+myNode[3].getTruePositives());
-            System.out.println("True Negatives = "+myNode[3].getTrueNegatives());
-            System.out.println("False Positives = "+myNode[3].getFalsePositives());
-            System.out.println("False Negatives = "+myNode[3].getFalseNegatives()+"\n");
-
-            
-            }
-         }         
-      
-      System.out.println("Done in: "+(System.currentTimeMillis()-t));
-      try{
-         Thread.sleep(1);
-         System.exit(0);
-      }   
-      catch (Exception e){
-
-      }
+      return myFileData;
    }
-
 
    public static void sort(Node[] node){
       int i = 0;
