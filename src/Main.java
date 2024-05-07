@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Main{
    public static void main(String[] args){
@@ -9,13 +10,13 @@ public class Main{
       int height = Integer.parseInt(args[0]);
 
       int numFiles = Integer.parseInt(args[1]);
-      double[][] fileData1;
-      double[][] fileData2;
-      double[][] fileData3;
+      double[][] fileData1 = null;
+      double[][] fileData2 = null;
+      double[][] fileData3 = null;
 
-      int[] results1;
-      int[] results2;
-      int[] results3;
+      int[] results1 = null;
+      int[] results2 = null;
+      int[] results3 = null; 
 
       for (int i = 0; i < numFiles; i++){
          if (i == 0){
@@ -33,21 +34,81 @@ public class Main{
          }
 
       if (numFiles == 1){
-
+         Node[] myNodes = new Node[4];
+         for (int i = 0; i < 4; i++){
+            myNodes[i] = new Node(fileData1, results1, i, height);
+            myNodes[i].start();
+            }
+         for (int i = 0; i < 4; i++){
+            try{
+               myNodes[i].join();
+               System.out.println("Fitness:");
+               System.out.println(myNodes[i].getFitness()+"\n");
+               System.out.println("True Positives:");
+               System.out.println(myNodes[i].getTruePositives()+"\n");
+               System.out.println("True Negatives:");
+               System.out.println(myNodes[i].getTrueNegatives()+"\n");
+               System.out.println("False Positives:");
+               System.out.println(myNodes[i].getFalsePositives()+"\n");
+               System.out.println("False Negatives:");
+               System.out.println(myNodes[i].getFalsePositives()+"\n");
+               }
+            catch(Exception e){
+               System.out.println(e);
+               }
+            }
+         
          }
 
       else if(numFiles == 2){
-
+         Node[] myNodes = new Node[4];
+         for (int i = 0; i < 4; i++){
+            myNodes[i] = new Node(fileData1, results1, results1.length, height);
+            myNodes[i].start();
+            }
          }
 
       else{
+         Node myNode1 = new Node(fileData1, results1, results1.length, height);
+         myNode1.insert(0);
 
+         Node myNode2 = new Node(fileData2, results2, results2.length, height);
+         myNode2.insert(0);
+
+         
          }
       
    }
 
    public static double[][] processData(String[][] rawData){
-      return null;
+      int x = rawData.length;
+      int y = rawData[0].length;
+
+      double[][] myProcessedData = new double[x][y];
+      ArrayList<String> myList = new ArrayList<>();
+
+      for (int j = 0; j < y; j++){
+         for (int i = 0; i < x; i++){
+            try{
+               myProcessedData[i][j] = Double.parseDouble(rawData[i][j]);
+               //System.out.println(myProcessedData[i][j]);
+            }
+            catch(Exception e){
+               if (myList.contains(rawData[i][j])){
+                  myProcessedData[i][j] = myList.indexOf(rawData[i][j]);
+                  //System.out.println(myProcessedData[i][j]);
+               }
+               else{
+                  myList.add(rawData[i][j]);
+                  myProcessedData[i][j] = myList.indexOf(rawData[i][j]);
+                  //System.out.println(myProcessedData[i][j]);
+               }
+            }
+         }
+
+      }
+
+      return myProcessedData;
    }
    
    public static int[] getResults(String fileName){
@@ -88,7 +149,7 @@ public class Main{
          System.exit(0);
          }
 
-      return null;
+      return results;
    }
 
    public static String[][] readMyFile(String fileName){
@@ -101,12 +162,12 @@ public class Main{
 
          int x = 0;
          int y = (myFileObj.nextLine().split(",").length)-1;
-
+         
          while (myFileObj.hasNextLine()){
             myFileObj.nextLine();
             x++; 
-            } 
-         
+            }
+
          myFileObj.close();
          myFileObj = new Scanner(myFile);
 

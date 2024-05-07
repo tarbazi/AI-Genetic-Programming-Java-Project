@@ -13,7 +13,7 @@ public class Node extends Thread{
    String[] functionalSet = {"+","-","x"}; //functional set values
 
    double[][] terminalVals;   //stores an array of the exact values from the input file
-   double[] results;
+   int[] results;
    boolean visited;    //tell us if a node has beem visited or not
 
    int seed;
@@ -34,7 +34,7 @@ public class Node extends Thread{
       visited = false;
    }
     
-   public Node(double[][] terminalVals, double[] results, int seed, int maxHeight){
+   public Node(double[][] terminalVals, int[] results, int seed, int maxHeight){
       var = "<";
       leftVal = -1;
       rightVal = -1;
@@ -65,33 +65,34 @@ public class Node extends Thread{
    public void insert(int nodeSide){
       
       if ((currentHeight < maxHeight) && nodeSide == 0){
-         String temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
-         this.leftChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
-         //System.out.println(currentHeight);
-         //System.out.println("Inserted some functional node on the left.");
+
+         if (this.leftChild == null){
+            String temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
+            this.leftChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
+            }
+
          this.leftChild.insert(0);
+      
       }//insert functional node on the left of the currentnode
 
       else if ((currentHeight >= maxHeight) && nodeSide == 0){
+
          String temp = terminalSet[(int)(myRandom.nextDouble()*terminalSet.length)];
          this.leftChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, true);
-         //System.out.println("Inserted some terminal node on the left.");
          this.insert(1);
 
       }//insert terminal node on the left of any node
 
       else if (currentHeight < maxHeight && nodeSide == 1){
+         
          if (this.rightChild == null){
             String temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
             this.rightChild = new Node(this, this.terminalVals, temp, 12, this.getSeed(), this.maxHeight, this.currentHeight+1, false);
-            //System.out.println(currentHeight);
-            //System.out.println("Inserted some functional node on the right.");
             this.rightChild.insert(0);
          }//insert functional node on the right of the current node
 
          else{
-            if (this.parent != null){
-               //System.out.println("Went up");  
+            if (this.parent != null){  
                this.parent.insert(1);
                //move one step up on the tree
             }
@@ -142,7 +143,7 @@ public class Node extends Thread{
       trueNegatives = 0;
       falsePositives = 0;
       falseNegatives = 0;
-      for (int i = 0; i < 768; i++){
+      for (int i = 0; i < terminalVals.length; i++){
          double result = this.getResult(i);
          //System.out.println(result);
          boolean check = (results[i] == result);
@@ -168,11 +169,11 @@ public class Node extends Thread{
             }   
 
          }
-         this.fitness = (100*count)/768;
-         this.trueNegatives = (100*trueNegatives)/768;
-         this.truePositives = (100*truePositives)/768;
-         this.falseNegatives = (100*falseNegatives)/768;
-         this.falsePositives = (100*falsePositives)/768;
+         this.fitness = (100*count)/terminalVals.length;
+         this.trueNegatives = (100*trueNegatives)/terminalVals.length;
+         this.truePositives = (100*truePositives)/terminalVals.length;
+         this.falseNegatives = (100*falseNegatives)/terminalVals.length;
+         this.falsePositives = (100*falsePositives)/terminalVals.length;
       }
 
    public double getResult(int i){
