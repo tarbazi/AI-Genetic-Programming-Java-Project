@@ -90,7 +90,7 @@ public class Main{
                
                sort(myNodes);
 
-               System.out.println("Generation "+i);
+               System.out.println("Generation "+i+" from mutation.");
                for (int j = 0; j < 4; j++){
                   System.out.println("Fitness:");
                   System.out.println(myNodes[j].getFitness());
@@ -107,8 +107,50 @@ public class Main{
 
             else{
                Crossover[] myCrossover = new Crossover[4];
+               int a, b, c, d;
+               a = (int)(myRandom.nextDouble()*4);
+               b = (int)(myRandom.nextDouble()*4);
+               c = (int)(myRandom.nextDouble()*4);
+               d = (int)(myRandom.nextDouble()*4);
+
+               while (a == b | a == c | a == d | b == c | b == d | c == d){
+                  a = (int)(myRandom.nextDouble()*4);
+                  b = (int)(myRandom.nextDouble()*4);
+                  c = (int)(myRandom.nextDouble()*4);
+                  d = (int)(myRandom.nextDouble()*4);
+               }
+
                for (int j = 0; j < 4; j++){
-                  myCrossover[j] = new Crossover();
+                  myCrossover[j] = new Crossover(myNodes[a], myNodes[b], (int)(myRandom.nextDouble()*100));
+                  myCrossover[j].start();
+               }
+
+               for (int j = 0; j < 4; j++){
+                  try{
+                  myCrossover[j].join();
+                  }
+
+                  catch(Exception e){
+                     System.out.println(e);
+                  }
+
+                  myNodes[j].evaluate();
+               }
+               
+               sort(myNodes);
+
+               System.out.println("Generation "+i+" from crossover");
+               for (int j = 0; j < 4; j++){
+                  System.out.println("Fitness:");
+                  System.out.println(myNodes[j].getFitness());
+                  System.out.println("True Positives:");
+                  System.out.println(myNodes[j].getTruePositives());
+                  System.out.println("True Negatives:");
+                  System.out.println(myNodes[j].getTrueNegatives());
+                  System.out.println("False Positives:");
+                  System.out.println(myNodes[j].getFalsePositives());
+                  System.out.println("False Negatives:");
+                  System.out.println(myNodes[j].getFalseNegatives()+"\n");
                }
             }
          }
