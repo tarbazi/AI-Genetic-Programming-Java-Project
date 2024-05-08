@@ -63,7 +63,54 @@ public class Main{
             System.out.println("False Positives:");
             System.out.println(myNodes[i].getFalsePositives());
             System.out.println("False Negatives:");
-            System.out.println(myNodes[i].getFalsePositives()+"\n\n");
+            System.out.println(myNodes[i].getFalseNegatives()+"\n");
+         }
+
+         for (int i = 1; i < 11; i++){
+            
+            if (i%4 != 0){
+               Mutate[] myMutate = new Mutate[4];
+
+               for (int j = 0; j < 4; j++){
+                  myMutate[j] = new Mutate(myNodes[j], (int)(myRandom.nextDouble()*100));
+                  myMutate[j].start();
+               }
+
+               for (int j = 0; j < 4; j++){
+                  try{
+                     myMutate[j].join();
+                  }
+
+                  catch(Exception e){
+                     System.out.println(e);
+                  }
+
+                  myNodes[j].evaluate();
+               }
+               
+               sort(myNodes);
+
+               System.out.println("Generation "+i);
+               for (int j = 0; j < 4; j++){
+                  System.out.println("Fitness:");
+                  System.out.println(myNodes[j].getFitness());
+                  System.out.println("True Positives:");
+                  System.out.println(myNodes[j].getTruePositives());
+                  System.out.println("True Negatives:");
+                  System.out.println(myNodes[j].getTrueNegatives());
+                  System.out.println("False Positives:");
+                  System.out.println(myNodes[j].getFalsePositives());
+                  System.out.println("False Negatives:");
+                  System.out.println(myNodes[j].getFalseNegatives()+"\n");
+               }
+            }
+
+            else{
+               Crossover[] myCrossover = new Crossover[4];
+               for (int j = 0; j < 4; j++){
+                  myCrossover[j] = new Crossover();
+               }
+            }
          }
       }
 

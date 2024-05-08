@@ -201,6 +201,10 @@ public class Node extends Thread{
       this.var = var;
    }
 
+   public String getVar(){
+      return var;
+   }
+
    public Random getSeed(){
       return myRandom;
    }
@@ -286,4 +290,8 @@ public class Node extends Thread{
    public double getFalsePositives(){
       return this.falsePositives;
       }
+
+   public String[] getTerminalSet(){
+      return this.terminalSet;
+   }
 }

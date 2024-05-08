@@ -4,7 +4,7 @@ public class Mutate extends Thread{
     Node parent;
     Random myRandom;
 
-    String[] terminalSet = {"X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"};  //terminal set variables
+    String[] terminalSet;  //terminal set variables
     String[] functionalSet = {"+","-","x"}; //functional set values
 
     int[] initDir = {-1,1};
@@ -16,6 +16,7 @@ public class Mutate extends Thread{
     
     public Mutate(Node parent, int i){
         this.parent = parent;
+        terminalSet = parent.getTerminalSet();
         myRandom = new Random(i);
         }
 
@@ -36,13 +37,25 @@ public class Mutate extends Thread{
                     traverse = traverse.leftChild;
                     }
                 else{
-                    traverse.setVar(functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)]);
+                    String temp = traverse.getVar();
+                    //System.out.println("initially: "+traverse.getVar());
+                    while (temp.equals(traverse.getVar())){
+                        temp = functionalSet[(int)(myRandom.nextDouble()*functionalSet.length)];
+                    }
+                    traverse.setVar(temp);
+                    //System.out.println("finally: "+traverse.getVar());
                     break;
                     }
                 dir = finalDir[(int)(myRandom.nextDouble()*finalDir.length)];
                 }
             else{
-                traverse.setVar(terminalSet[(int)(myRandom.nextDouble()*terminalSet.length)]);
+                String temp = traverse.getVar();
+                //System.out.println("initially: "+traverse.getVar());
+                while (temp.equals(traverse.getVar())){
+                    temp = terminalSet[(int)(myRandom.nextDouble()*terminalSet.length)];
+                }
+                traverse.setVar(temp);
+                //System.out.println(traverse.getVar());
                 break;
                 }
             }
