@@ -39,26 +39,33 @@ public class Main{
             myNodes[i] = new Node(fileData1, results1, i, height);
             myNodes[i].start();
             }
+
          for (int i = 0; i < 4; i++){
             try{
                myNodes[i].join();
-               System.out.println("Fitness:");
-               System.out.println(myNodes[i].getFitness()+"\n");
-               System.out.println("True Positives:");
-               System.out.println(myNodes[i].getTruePositives()+"\n");
-               System.out.println("True Negatives:");
-               System.out.println(myNodes[i].getTrueNegatives()+"\n");
-               System.out.println("False Positives:");
-               System.out.println(myNodes[i].getFalsePositives()+"\n");
-               System.out.println("False Negatives:");
-               System.out.println(myNodes[i].getFalsePositives()+"\n");
                }
             catch(Exception e){
                System.out.println(e);
                }
             }
+         sort(myNodes);
          
+         System.out.println("Initial Population Was Created with the following attributes");
+         System.out.println("************************************************************\n");
+
+         for (int i = 0; i < 4; i++){
+            System.out.println("Fitness:");
+            System.out.println(myNodes[i].getFitness());
+            System.out.println("True Positives:");
+            System.out.println(myNodes[i].getTruePositives());
+            System.out.println("True Negatives:");
+            System.out.println(myNodes[i].getTrueNegatives());
+            System.out.println("False Positives:");
+            System.out.println(myNodes[i].getFalsePositives());
+            System.out.println("False Negatives:");
+            System.out.println(myNodes[i].getFalsePositives()+"\n\n");
          }
+      }
 
       else if(numFiles == 2){
          Node[] myNodes = new Node[4];
@@ -74,8 +81,6 @@ public class Main{
 
          Node myNode2 = new Node(fileData2, results2, results2.length, height);
          myNode2.insert(0);
-
-         
          }
       
    }
@@ -125,7 +130,7 @@ public class Main{
          while (myFileObj.hasNextLine()){
             myFileObj.nextLine();
             x++; 
-            } 
+         } 
          
          myFileObj.close();
          myFileObj = new Scanner(myFile);
@@ -138,16 +143,16 @@ public class Main{
          while (myFileObj.hasNextLine()){
             results[i] = Integer.parseInt(myFileObj.nextLine().split(",")[y]);
             i++;
-            }
+         }
 
          myFileObj.close();
-         }
+      }
          
       catch(FileNotFoundException e){
          results = null;
          System.out.println("File not found. Check filename carefully and make sure file the target file is stored in the \"file\"");
          System.exit(0);
-         }
+      }
 
       return results;
    }
@@ -166,7 +171,7 @@ public class Main{
          while (myFileObj.hasNextLine()){
             myFileObj.nextLine();
             x++; 
-            }
+         }
 
          myFileObj.close();
          myFileObj = new Scanner(myFile);
@@ -180,18 +185,18 @@ public class Main{
             String[] temp = myFileObj.nextLine().split(",");
             for (int j = 0; j < y; j++){
                myFileData[i][j] = temp[j];
-               }
-            i++;
             }
+            i++;
+         }
 
          myFileObj.close();
-         }
+      }
          
       catch(FileNotFoundException e){
          myFileData = null;
          System.out.println("File not found. Check filename carefully and make sure file the target file is stored in the \"file\"");
          System.exit(0);
-         }
+      }
       return myFileData;
    }
 
@@ -205,11 +210,11 @@ public class Main{
             node[i] = node[i+1];
             node[i+1] = temp;
             i = 0;
-            }
+         }
          else{
             i++;
-            }   
-         }
-      
-      } 
+         }   
+      }
+   
+   } 
 }

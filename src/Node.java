@@ -9,7 +9,7 @@ public class Node extends Thread{
 
    double leftVal, rightVal; //stores the numeric values returned from the left and right subtree of the node
 
-   String[] terminalSet = {"X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"};  //terminal set variables
+   String[] terminalSet;  //terminal set variables
    String[] functionalSet = {"+","-","x"}; //functional set values
 
    double[][] terminalVals;   //stores an array of the exact values from the input file
@@ -44,6 +44,8 @@ public class Node extends Thread{
       currentHeight = 1;
       myRandom = new Random(seed);
       left = false;
+      terminalSet = new String[terminalVals[0].length];
+      populate(terminalSet);
       this.terminalVals = terminalVals;
       this.results = results;        
    }
@@ -60,6 +62,8 @@ public class Node extends Thread{
       rightVal = -1;
       visited = false;
       this.left = left;
+      terminalSet = new String[terminalVals[0].length];
+      populate(terminalSet);
    }
     
    public void insert(int nodeSide){
@@ -253,7 +257,14 @@ public class Node extends Thread{
          }            
       }       
     
-    public int getSeedVal(){
+   public void populate(String[] terminalSet){
+      String X = "X";
+      for (int i = 0; i < terminalSet.length; i++){
+         terminalSet[i] = X + i;
+      }
+   }
+
+   public int getSeedVal(){
       return this.seed;
       }
    public double getFitness(){
