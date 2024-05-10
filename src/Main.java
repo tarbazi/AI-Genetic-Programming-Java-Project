@@ -40,7 +40,10 @@ public class Main{
       }
 
       else if(numFiles == 2){
+         double initTime = System.currentTimeMillis();
          Node[] firstGenerationsNodes = targetCompute(fileData1, results1, height, myRandom);
+         double finTime = System.currentTimeMillis();
+         System.out.println("Entire Genetic Program Rand in "+(finTime-initTime)+"\n");
 
          System.out.println("Transfering Learning Takes Place From Source File: "+args[2]+" To Target File "+ args[3]+"\n");
 
@@ -83,8 +86,10 @@ public class Main{
    }
 
    public static Node[] targetCompute(double[][] fileData, int[] results, int height, Random myRandom){
+      
       DecimalFormat df = new DecimalFormat("###");
       Node[] myNodes = new Node[4];
+      double initTime = System.currentTimeMillis();
       for (int i = 0; i < 4; i++){
          myNodes[i] = new Node(fileData, results, i, height);
          myNodes[i].start();
@@ -98,12 +103,14 @@ public class Main{
             System.out.println(e);
             }
          }
+      
       sort(myNodes);
       
       System.out.println("Initial Population Was Created with the following attributes");
       System.out.println("************************************************************\n");
 
       for (int i = 0; i < 4; i++){
+         
          System.out.println("Fitness:");
          System.out.println(df.format(myNodes[i].getFitness())+"%");
          System.out.println("Classified as:  Positives | Negative");
@@ -111,13 +118,19 @@ public class Main{
          System.out.println("True Negatives:    "+ df.format(myNodes[i].getFalsePositives()) +"       " + df.format(myNodes[i].getTrueNegatives()));
          System.out.println("Accuracy Score");
          System.out.println(df.format(myNodes[i].getAccuracy())+"% \n");
+
       }
+      
+      double finTime = System.currentTimeMillis();
+      
+      System.out.println("This generation executed in "+(finTime-initTime)+"\n");
 
       for (int i = 1; i < 11; i++){
          
          if (i%4 != 0){
             Mutate[] myMutate = new Mutate[4];
 
+            initTime = System.currentTimeMillis();
             for (int j = 0; j < 4; j++){
                myMutate[j] = new Mutate(myNodes[j], (int)(myRandom.nextDouble()*100));
                myMutate[j].start();
@@ -147,11 +160,14 @@ public class Main{
                System.out.println("Accuracy Score");
                System.out.println(df.format(myNodes[j].getAccuracy())+"% \n");
             }
+            finTime = System.currentTimeMillis();
+            System.out.println("This generation executed in "+(finTime-initTime)+"\n");
          }
 
          else{
             Crossover[] myCrossover = new Crossover[4];
             int a, b, c, d;
+            initTime = System.currentTimeMillis();
             a = (int)(myRandom.nextDouble()*4);
             b = (int)(myRandom.nextDouble()*4);
             c = (int)(myRandom.nextDouble()*4);
@@ -193,6 +209,8 @@ public class Main{
                System.out.println("Accuracy Score");
                System.out.println(df.format(myNodes[j].getAccuracy())+"% \n");
             }
+            finTime = System.currentTimeMillis();
+            System.out.println("This generation executed in "+(finTime-initTime)+"\n");
          }
       }
       return myNodes;
