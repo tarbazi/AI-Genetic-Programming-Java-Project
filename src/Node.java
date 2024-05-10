@@ -181,6 +181,23 @@ public class Node extends Thread{
          this.fitness = (100*count)/terminalVals.length;
       }
 
+   public void adaptTerminals(double[][] terminalVals, int[] results, Random rand){
+      if (this.leftChild != null){
+         this.leftChild.terminalVals = terminalVals;
+         this.leftChild.results = results;
+         this.leftChild.adaptTerminals(terminalVals, results, rand);
+         this.rightChild.terminalVals = terminalVals;
+         this.rightChild.results = results;
+         this.rightChild.adaptTerminals(terminalVals, results, rand);
+      }
+
+      else{
+         this.terminalVals = terminalVals;
+         this.results = results;
+         this.setVar(terminalSet[(int)(rand.nextDouble()*terminalSet.length)]);
+      }
+   }
+
    public double getResult(int i){
       if (this.leftChild != null){
          this.leftVal = this.leftChild.getResult(i);
@@ -210,19 +227,17 @@ public class Node extends Thread{
       return myRandom;
    }
       
+   public int getIndex(String target){
+   int ret = -1;
    
-      
-    public int getIndex(String target){
-      int ret = -1;
-      
-      for (int i = 0; i < 9; i++){
-         ret++;
-         if (target.equals(terminalSet[i])){
-            return ret;
-            }   
-         }
-      return ret;
-      } 
+   for (int i = 0; i < 9; i++){
+      ret++;
+      if (target.equals(terminalSet[i])){
+         return ret;
+         }   
+      }
+   return ret;
+   } 
       
    public double operate(){
    

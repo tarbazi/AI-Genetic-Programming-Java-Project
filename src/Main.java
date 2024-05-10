@@ -41,10 +41,13 @@ public class Main{
 
       else if(numFiles == 2){
          Node[] firstGenerationsNodes = targetCompute(fileData1, results1, height, myRandom);
+
+         System.out.println("Transfering Learning Takes Place From Source File: "+args[2]+" To Target File "+ args[3]+"\n");
+
          Transfer[] myTransfer = new Transfer[4];
 
          for (int i = 0; i < 4; i++){
-            myTransfer[i] = new Transfer(firstGenerationsNodes[i], fileData1, results1);
+            myTransfer[i] = new Transfer(firstGenerationsNodes[i], fileData2, results2, i);
             myTransfer[i].start();
          }
 
@@ -55,6 +58,19 @@ public class Main{
             catch(Exception e){
                System.out.println(e);
             }
+         }
+         DecimalFormat df = new DecimalFormat("###");
+         
+         sort(firstGenerationsNodes);
+         
+         for (int i = 0; i < 4; i++){
+            System.out.println("Fitness:");
+            System.out.println(df.format(firstGenerationsNodes[i].getFitness())+"%");
+            System.out.println("Classified as:  Positives | Negative");
+            System.out.println("True Postive       "+ df.format(firstGenerationsNodes[i].getTruePositives()) +"       "+ df.format(firstGenerationsNodes[i].getFalseNegatives()));
+            System.out.println("True Negatives:    "+ df.format(firstGenerationsNodes[i].getFalsePositives()) +"       " + df.format(firstGenerationsNodes[i].getTrueNegatives()));
+            System.out.println("Accuracy Score");
+            System.out.println(df.format(firstGenerationsNodes[i].getAccuracy())+"% \n");
          }
 
       }
@@ -312,6 +328,5 @@ public class Main{
             i++;
          }   
       }
-   
    } 
 }
