@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.ArrayList;
@@ -12,11 +13,11 @@ public class Main{
       int numFiles = Integer.parseInt(args[1]);
       double[][] fileData1 = null;
       double[][] fileData2 = null;
-      double[][] fileData3 = null;
+      //double[][] fileData3 = null;
 
       int[] results1 = null;
       int[] results2 = null;
-      int[] results3 = null; 
+      //int[] results3 = null; 
 
       for (int i = 0; i < numFiles; i++){
          if (i == 0){
@@ -27,151 +28,158 @@ public class Main{
             fileData2 = processData(readMyFile(args[3]));
             results2 = getResults(args[3]);
             }
-         else{
+         /*else{
             fileData3 = processData(readMyFile(args[4]));
             results3 = getResults(args[4]);
-            }
+            }*/
          }
 
       if (numFiles == 1){
-         Node[] myNodes = new Node[4];
+         targetCompute(fileData1, results1, height, myRandom);
+
+      }
+
+      else if(numFiles == 2){
+         Node[] firstGenerationsNodes = targetCompute(fileData1, results1, height, myRandom);
+         Transfer[] myTransfer = new Transfer[4];
+
          for (int i = 0; i < 4; i++){
-            myNodes[i] = new Node(fileData1, results1, i, height);
-            myNodes[i].start();
-            }
+            myTransfer[i] = new Transfer(firstGenerationsNodes[i], fileData1, results1);
+            myTransfer[i].start();
+         }
 
          for (int i = 0; i < 4; i++){
             try{
-               myNodes[i].join();
-               }
+               myTransfer[i].join();
+            }
             catch(Exception e){
                System.out.println(e);
-               }
             }
-         sort(myNodes);
-         
-         System.out.println("Initial Population Was Created with the following attributes");
-         System.out.println("************************************************************\n");
-
-         for (int i = 0; i < 4; i++){
-            System.out.println("Fitness:");
-            System.out.println(myNodes[i].getFitness());
-            System.out.println("True Positives:");
-            System.out.println(myNodes[i].getTruePositives());
-            System.out.println("True Negatives:");
-            System.out.println(myNodes[i].getTrueNegatives());
-            System.out.println("False Positives:");
-            System.out.println(myNodes[i].getFalsePositives());
-            System.out.println("False Negatives:");
-            System.out.println(myNodes[i].getFalseNegatives()+"\n");
          }
 
-         for (int i = 1; i < 11; i++){
-            
-            if (i%4 != 0){
-               Mutate[] myMutate = new Mutate[4];
+      }
 
-               for (int j = 0; j < 4; j++){
-                  myMutate[j] = new Mutate(myNodes[j], (int)(myRandom.nextDouble()*100));
-                  myMutate[j].start();
-               }
+      /*else{
+         targetCompute(fileData1, results1, height, myRandom);
+         targetCompute(fileData2, results2, height, myRandom);
+         }*/
+      
+   }
 
-               for (int j = 0; j < 4; j++){
-                  try{
-                     myMutate[j].join();
-                  }
+   public static Node[] targetCompute(double[][] fileData, int[] results, int height, Random myRandom){
+      DecimalFormat df = new DecimalFormat("###");
+      Node[] myNodes = new Node[4];
+      for (int i = 0; i < 4; i++){
+         myNodes[i] = new Node(fileData, results, i, height);
+         myNodes[i].start();
+         }
 
-                  catch(Exception e){
-                     System.out.println(e);
-                  }
+      for (int i = 0; i < 4; i++){
+         try{
+            myNodes[i].join();
+            }
+         catch(Exception e){
+            System.out.println(e);
+            }
+         }
+      sort(myNodes);
+      
+      System.out.println("Initial Population Was Created with the following attributes");
+      System.out.println("************************************************************\n");
 
-                  myNodes[j].evaluate();
-               }
-               
-               sort(myNodes);
+      for (int i = 0; i < 4; i++){
+         System.out.println("Fitness:");
+         System.out.println(df.format(myNodes[i].getFitness())+"%");
+         System.out.println("Classified as:  Positives | Negative");
+         System.out.println("True Postive       "+ df.format(myNodes[i].getTruePositives()) +"       "+ df.format(myNodes[i].getFalseNegatives()));
+         System.out.println("True Negatives:    "+ df.format(myNodes[i].getFalsePositives()) +"       " + df.format(myNodes[i].getTrueNegatives()));
+         System.out.println("Accuracy Score");
+         System.out.println(df.format(myNodes[i].getAccuracy())+"% \n");
+      }
 
-               System.out.println("Generation "+i+" from mutation.");
-               for (int j = 0; j < 4; j++){
-                  System.out.println("Fitness:");
-                  System.out.println(myNodes[j].getFitness());
-                  System.out.println("True Positives:");
-                  System.out.println(myNodes[j].getTruePositives());
-                  System.out.println("True Negatives:");
-                  System.out.println(myNodes[j].getTrueNegatives());
-                  System.out.println("False Positives:");
-                  System.out.println(myNodes[j].getFalsePositives());
-                  System.out.println("False Negatives:");
-                  System.out.println(myNodes[j].getFalseNegatives()+"\n");
-               }
+      for (int i = 1; i < 11; i++){
+         
+         if (i%4 != 0){
+            Mutate[] myMutate = new Mutate[4];
+
+            for (int j = 0; j < 4; j++){
+               myMutate[j] = new Mutate(myNodes[j], (int)(myRandom.nextDouble()*100));
+               myMutate[j].start();
             }
 
-            else{
-               Crossover[] myCrossover = new Crossover[4];
-               int a, b, c, d;
+            for (int j = 0; j < 4; j++){
+               try{
+                  myMutate[j].join();
+               }
+
+               catch(Exception e){
+                  System.out.println(e);
+               }
+
+               myNodes[j].evaluate();
+            }
+            
+            sort(myNodes);
+
+            System.out.println("Generation "+i+" from mutation.");
+            for (int j = 0; j < 4; j++){
+               System.out.println("Fitness:");
+               System.out.println(df.format(myNodes[j].getFitness())+"%");
+               System.out.println("Classified as:  Positives | Negative");
+               System.out.println("True Postive       "+ df.format(myNodes[j].getTruePositives()) +"       "+ df.format(myNodes[j].getFalseNegatives()));
+               System.out.println("True Negatives:    "+ df.format(myNodes[j].getFalsePositives()) +"       " + df.format(myNodes[j].getTrueNegatives()));
+               System.out.println("Accuracy Score");
+               System.out.println(df.format(myNodes[j].getAccuracy())+"% \n");
+            }
+         }
+
+         else{
+            Crossover[] myCrossover = new Crossover[4];
+            int a, b, c, d;
+            a = (int)(myRandom.nextDouble()*4);
+            b = (int)(myRandom.nextDouble()*4);
+            c = (int)(myRandom.nextDouble()*4);
+            d = (int)(myRandom.nextDouble()*4);
+
+            while (a == b | a == c | a == d | b == c | b == d | c == d){
                a = (int)(myRandom.nextDouble()*4);
                b = (int)(myRandom.nextDouble()*4);
                c = (int)(myRandom.nextDouble()*4);
                d = (int)(myRandom.nextDouble()*4);
+            }
 
-               while (a == b | a == c | a == d | b == c | b == d | c == d){
-                  a = (int)(myRandom.nextDouble()*4);
-                  b = (int)(myRandom.nextDouble()*4);
-                  c = (int)(myRandom.nextDouble()*4);
-                  d = (int)(myRandom.nextDouble()*4);
+            for (int j = 0; j < 4; j++){
+               myCrossover[j] = new Crossover(myNodes[a], myNodes[b], (int)(myRandom.nextDouble()*100));
+               myCrossover[j].start();
+            }
+
+            for (int j = 0; j < 4; j++){
+               try{
+               myCrossover[j].join();
                }
 
-               for (int j = 0; j < 4; j++){
-                  myCrossover[j] = new Crossover(myNodes[a], myNodes[b], (int)(myRandom.nextDouble()*100));
-                  myCrossover[j].start();
+               catch(Exception e){
+                  System.out.println(e);
                }
 
-               for (int j = 0; j < 4; j++){
-                  try{
-                  myCrossover[j].join();
-                  }
+               myNodes[j].evaluate();
+            }
+            
+            sort(myNodes);
 
-                  catch(Exception e){
-                     System.out.println(e);
-                  }
-
-                  myNodes[j].evaluate();
-               }
-               
-               sort(myNodes);
-
-               System.out.println("Generation "+i+" from crossover");
-               for (int j = 0; j < 4; j++){
-                  System.out.println("Fitness:");
-                  System.out.println(myNodes[j].getFitness());
-                  System.out.println("True Positives:");
-                  System.out.println(myNodes[j].getTruePositives());
-                  System.out.println("True Negatives:");
-                  System.out.println(myNodes[j].getTrueNegatives());
-                  System.out.println("False Positives:");
-                  System.out.println(myNodes[j].getFalsePositives());
-                  System.out.println("False Negatives:");
-                  System.out.println(myNodes[j].getFalseNegatives()+"\n");
-               }
+            System.out.println("Generation "+i+" from crossover");
+            for (int j = 0; j < 4; j++){
+               System.out.println("Fitness:");
+               System.out.println(df.format(myNodes[j].getFitness())+"%");
+               System.out.println("Classified as:  Positives | Negative");
+               System.out.println("True Postive       "+ df.format(myNodes[j].getTruePositives()) +"       "+ df.format(myNodes[j].getFalseNegatives()));
+               System.out.println("True Negatives:    "+ df.format(myNodes[j].getFalsePositives()) +"       " + df.format(myNodes[j].getTrueNegatives()));
+               System.out.println("Accuracy Score");
+               System.out.println(df.format(myNodes[j].getAccuracy())+"% \n");
             }
          }
       }
-
-      else if(numFiles == 2){
-         Node[] myNodes = new Node[4];
-         for (int i = 0; i < 4; i++){
-            myNodes[i] = new Node(fileData1, results1, results1.length, height);
-            myNodes[i].start();
-            }
-         }
-
-      else{
-         Node myNode1 = new Node(fileData1, results1, results1.length, height);
-         myNode1.insert(0);
-
-         Node myNode2 = new Node(fileData2, results2, results2.length, height);
-         myNode2.insert(0);
-         }
-      
+      return myNodes;
    }
 
    public static double[][] processData(String[][] rawData){

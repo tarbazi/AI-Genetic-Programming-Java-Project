@@ -140,7 +140,12 @@ public class Node extends Thread{
          }
       }
    }
-    
+   
+   public void setTerminalValsAndResults(double[][] terminalVals, int[] results){
+      this.terminalVals = terminalVals;
+      this.results = results;
+   }
+
    public void evaluate(){
       int count = 0;
       truePositives = 0;
@@ -174,10 +179,6 @@ public class Node extends Thread{
 
          }
          this.fitness = (100*count)/terminalVals.length;
-         this.trueNegatives = (100*trueNegatives)/terminalVals.length;
-         this.truePositives = (100*truePositives)/terminalVals.length;
-         this.falseNegatives = (100*falseNegatives)/terminalVals.length;
-         this.falsePositives = (100*falsePositives)/terminalVals.length;
       }
 
    public double getResult(int i){
@@ -290,6 +291,12 @@ public class Node extends Thread{
    public double getFalsePositives(){
       return this.falsePositives;
       }
+
+   public double getAccuracy(){
+      double num = this.truePositives + this.trueNegatives;
+      double den = this.falsePositives + this.trueNegatives + this.falsePositives + this.falseNegatives;
+      return 100*(num/den);
+   }
 
    public String[] getTerminalSet(){
       return this.terminalSet;
