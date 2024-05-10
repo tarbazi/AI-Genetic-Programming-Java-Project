@@ -49,6 +49,7 @@ public class Main{
 
          Transfer[] myTransfer = new Transfer[4];
 
+         initTime = System.currentTimeMillis();
          for (int i = 0; i < 4; i++){
             myTransfer[i] = new Transfer(firstGenerationsNodes[i], fileData2, results2, i);
             myTransfer[i].start();
@@ -62,6 +63,7 @@ public class Main{
                System.out.println(e);
             }
          }
+         finTime = System.currentTimeMillis();
          DecimalFormat df = new DecimalFormat("###");
          
          sort(firstGenerationsNodes);
@@ -75,7 +77,98 @@ public class Main{
             System.out.println("Accuracy Score");
             System.out.println(df.format(firstGenerationsNodes[i].getAccuracy())+"% \n");
          }
+         System.out.println("Generation of initial population with transfer learning took "+(finTime-initTime));
 
+         for (int i = 1; i < 11; i++){
+         
+            if (i%4 != 0){
+               Mutate[] myMutate = new Mutate[4];
+   
+               for (int j = 0; j < 4; j++){
+                  myMutate[j] = new Mutate(firstGenerationsNodes[j], (int)(myRandom.nextDouble()*100));
+                  myMutate[j].start();
+               }
+               
+               initTime = System.currentTimeMillis();
+               for (int j = 0; j < 4; j++){
+                  try{
+                     myMutate[j].join();
+                  }
+   
+                  catch(Exception e){
+                     System.out.println(e);
+                  }
+   
+                  firstGenerationsNodes[j].evaluate();
+               }
+               finTime = System.currentTimeMillis();
+               sort(firstGenerationsNodes);
+   
+               System.out.println("Generation "+i+" from mutation.");
+               for (int j = 0; j < 4; j++){
+                  System.out.println("Fitness:");
+                  System.out.println(df.format(firstGenerationsNodes[j].getFitness())+"%");
+                  System.out.println("Classified as:  Positives | Negative");
+                  System.out.println("True Postive       "+ df.format(firstGenerationsNodes[j].getTruePositives()) +"       "+ df.format(firstGenerationsNodes[j].getFalseNegatives()));
+                  System.out.println("True Negatives:    "+ df.format(firstGenerationsNodes[j].getFalsePositives()) +"       " + df.format(firstGenerationsNodes[j].getTrueNegatives()));
+                  System.out.println("Accuracy Score");
+                  System.out.println(df.format(firstGenerationsNodes[j].getAccuracy())+"% \n");
+               }
+               System.out.println("This generation executed in "+(finTime-initTime)+"\n");
+            }
+   
+            else{
+               Crossover[] myCrossover = new Crossover[4];
+               int a, b, c, d;
+      
+               a = (int)(myRandom.nextDouble()*4);
+               b = (int)(myRandom.nextDouble()*4);
+               c = (int)(myRandom.nextDouble()*4);
+               d = (int)(myRandom.nextDouble()*4);
+   
+               while (a == b | a == c | a == d | b == c | b == d | c == d){
+                  a = (int)(myRandom.nextDouble()*4);
+                  b = (int)(myRandom.nextDouble()*4);
+                  c = (int)(myRandom.nextDouble()*4);
+                  d = (int)(myRandom.nextDouble()*4);
+               }
+
+               initTime = System.currentTimeMillis();
+
+               for (int j = 0; j < 4; j++){
+                  myCrossover[j] = new Crossover(firstGenerationsNodes[a], firstGenerationsNodes[b], (int)(myRandom.nextDouble()*100));
+                  myCrossover[j].start();
+               }
+   
+               for (int j = 0; j < 4; j++){
+                  try{
+                  myCrossover[j].join();
+                  }
+   
+                  catch(Exception e){
+                     System.out.println(e);
+                  }
+   
+               firstGenerationsNodes[j].evaluate();
+               }
+               
+               finTime = System.currentTimeMillis();
+               sort(firstGenerationsNodes);
+   
+               System.out.println("Generation "+i+" from crossover");
+               for (int j = 0; j < 4; j++){
+                  System.out.println("Fitness:");
+                  System.out.println(df.format(firstGenerationsNodes[j].getFitness())+"%");
+                  System.out.println("Classified as:  Positives | Negative");
+                  System.out.println("True Postive       "+ df.format(firstGenerationsNodes[j].getTruePositives()) +"       "+ df.format(firstGenerationsNodes[j].getFalseNegatives()));
+                  System.out.println("True Negatives:    "+ df.format(firstGenerationsNodes[j].getFalsePositives()) +"       " + df.format(firstGenerationsNodes[j].getTrueNegatives()));
+                  System.out.println("Accuracy Score");
+                  System.out.println(df.format(firstGenerationsNodes[j].getAccuracy())+"% \n");
+               }
+               
+               System.out.println("This generation executed in "+(finTime-initTime)+"\n");
+            }
+         }
       }
 
       /*else{
